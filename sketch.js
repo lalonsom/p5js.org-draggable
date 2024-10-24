@@ -1,0 +1,71 @@
+let allTheButtons =[];
+let startButton;
+let secondButton;
+
+function setup() {
+  createCanvas(400, 400);
+  
+  createAllButtons();
+  newScreen(0);
+}
+
+function draw() {
+  
+}
+
+// Changes Screen
+function newScreen(x) {
+  nukeAllButtons();
+  if(x==0){
+    startScreen();
+  }else if(x==1){
+    secondScreen();
+  }
+}
+
+function startScreen(){
+  background(200);
+  startButton.position(200-(32),200-10);
+}
+
+function secondScreen(){
+  background(0);
+  secondButton.position(0,0);
+}
+
+
+//This function should create all the buttons and 
+function createAllButtons(){
+  //creates the buttons
+  createStartButton();
+  createSecondButton();
+}
+
+
+function createStartButton(){
+  startButton = createButton('click me', "white");
+  startButton.position(200-(32),200-10);
+
+  // Call randomColor() when the button is pressed.
+  startButton.mousePressed(() => newScreen(1));
+}
+
+
+function createSecondButton(){
+  secondButton= createButton('click me', "white");
+  secondButton.position(0,0);
+  
+  
+  secondButton.mousePressed(() => newScreen(0));
+}
+
+
+//This function should make go through the array AllTheButtons and move them to the edges of the world
+function nukeAllButtons(){
+  startButton.position(2000,2000);
+   secondButton.position(2000,2000);
+   // try {
+   // secondButton.position(2000,2000);
+   // }
+   // catch( error){}
+}
