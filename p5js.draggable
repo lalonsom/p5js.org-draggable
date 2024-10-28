@@ -1,0 +1,39 @@
+let circleX, circleY;  
+let circleRadius = 50; 
+let dragging = false; 
+let offsetX, offsetY; 
+
+function setup() {
+  createCanvas(400, 400);
+  
+  circleX = width / 2;
+  circleY = height / 2;
+}
+
+function draw() {
+  background(220);
+ 
+
+  fill(255, 0, 0);
+  ellipse(circleX, circleY, circleRadius * 2);
+ 
+
+  if (dragging) {
+    circleX = mouseX + offsetX;
+    circleY = mouseY + offsetY;
+  }
+}
+
+function mousePressed() {
+  let distance = dist(mouseX, mouseY, circleX, circleY);
+  if (distance < circleRadius) {
+    dragging = true;
+
+    offsetX = circleX - mouseX;
+    offsetY = circleY - mouseY;
+  }
+}
+
+function mouseReleased() {
+  dragging = false;
+}
