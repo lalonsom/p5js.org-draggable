@@ -1,0 +1,13 @@
+ 
+let bgSlider;
+
+function setup() {
+ 
+  createCanvas(200, 200);
+
+ 
+  bgSlider = createSlider(0, 255, 255);
+  
+   
+  bgSlider.position(20, 20);
+}
