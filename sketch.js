@@ -1,14 +1,16 @@
 function setup() {
-  createCanvas(710, 400);
+  createCanvas(400, 400);
   background(200);
   strokeWeight(10);
+  //colorMode is not needed to get a single color pen
   colorMode(RGB);
-  //describe('A blank canvas where the user draws by dragging the mouse');
+  stroke("black");
+  rect(100,100,200,200);
 }
 
+
+
 function mouseDragged() {
-  //let lineHue = mouseX - mouseY;
   stroke(0, 255, 0);
   line(pmouseX, pmouseY, mouseX, mouseY);
 }
-
