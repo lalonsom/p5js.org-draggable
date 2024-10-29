@@ -1,0 +1,53 @@
+ let zoomCircle = 1;
+let zoomSquare = 1;
+
+function setup() {
+  createCanvas(600, 400);
+}
+
+function draw() {
+  background(220);
+  
+   
+  push();
+  translate(300, 200);  
+  scale(zoomCircle);  
+  fill(255, 0, 0);
+  ellipse(0, 0, 50, 50);  
+  pop();
+  
+  
+  push();
+  translate(400, 300);  
+  scale(zoomSquare);  
+  fill(0, 0, 255);
+  rect(-50, -50, 100, 100); 
+  pop();
+}
+
+function mousePressed() {
+   
+  let dCircle = dist(mouseX, mouseY, 300, 200);
+  if (dCircle < 50) {  
+    zoomCircle += 0.1;  
+  }
+  
+   
+  if (mouseX > 350 && mouseX < 450 && mouseY > 250 && mouseY < 350) {  
+    zoomSquare += 0.1;  
+  }
+}
+
+function mouseWheel(event) {
+   
+  let dCircle = dist(mouseX, mouseY, 300, 200);
+  if (dCircle < 50) {  
+    zoomCircle += event.delta > 0 ? -0.1 : 0.1;  
+    zoomCircle = constrain(zoomCircle, 0.5, 3);  
+  }
+
+  if (mouseX > 350 && mouseX < 450 && mouseY > 250 && mouseY < 350) {  
+zoomSquare += event.delta > 0 ? -0.1 : 0.1;  
+    zoomSquare = constrain(zoomSquare, 0.5, 3);  
+  }
+}
