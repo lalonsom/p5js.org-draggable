@@ -6,6 +6,8 @@ let emotionalGames;
 let Game1;
 let Game2;
 let Game3;
+let appName = 'Torturing The Elderly';
+let settings;
 
 //These arrays are used to simplify Nuke All and Create all respectivley
 const allButtonsNuke = [];
@@ -16,7 +18,8 @@ const allButtonsCreate = [
   function() {createGame1Button()},
   function() {createGame2Button()},
   function() {createGame3Button()},
-  function() {createEmotionalGamesButton()}
+  function() {createEmotionalGamesButton()},
+  function() {createSettingsButton()}
 ];
 
 //This array is used to set different screens
@@ -53,10 +56,15 @@ function newScreen(x) {
 
 function setStartScreen(){
   background(200);
-  creditScreen.position(395-(59),5);
+  settings.position(390-(59),5);
+  creditScreen.position(5, 395-20);
+  //appName.position(200-80,150);
   physicalGames.position((200-(80))-50,200+25);
-  
   emotionalGames.position((200+(80)-50),200+25);
+  
+  
+  textSize(25);
+  text(appName,85,150);
   
 }
 
@@ -95,7 +103,7 @@ function nukeAllButtons(){
 //Creates the start button
 function createCreditScreenButton(){
   creditScreen = createButton('Credits', "white");
-  creditScreen.position(400-(32),0);
+  creditScreen.position(5, 395-20);
   //creditScreen.position(200-(32),200-10); these cordinates set the button in the center of the screen
 
   // Sets screen to 2nd screen
@@ -150,4 +158,11 @@ function createEmotionalGamesButton(){
   emotionalGames.position((200+(80)-50),200+25);
   
   allButtonsNuke.push(function() {emotionalGames.position(2000,2000)});
+}
+
+function createSettingsButton(){
+  settings = createButton('Settings', "white");
+  settings.position(390-(59),5);
+  
+  allButtonsNuke.push(function() {settings.position(2000,2000)});
 }
