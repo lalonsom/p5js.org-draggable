@@ -1,0 +1,183 @@
+let creditScreen, startScreen, physicalGames, emotionalGames;
+let Game1, Game2, Game3, appName = 'Torturing The Elderly', settings;
+let moralChoiceButtons = []; // For RPG choices
+let feedbackText = ""; // For feedback messages
+
+// Arrays for buttons
+const allButtonsNuke = [];
+const allButtonsCreate = [
+  function() {createCreditScreenButton()},
+  function() {createStartScreenButton()},
+  function() {createPhysicalGamesScreenButton()},
+  function() {createGame1Button()},
+  function() {createGame2Button()},
+  function() {createGame3Button()},
+  function() {createEmotionalGamesButton()},
+  function() {createSettingsButton()}
+];
+const setScreen = [
+  function() {setStartScreen()},
+  function() {setCreditScreen()},
+  function() {setPhysicalGamesList()},
+  function() {setRPGGameScreen()}
+];
+
+function setup() {
+  createCanvas(400, 400);
+  createAllButtons();
+  newScreen(0); // Start on the main screen
+}
+
+function draw() {
+  // This function remains empty unless animations or dynamic updates are added.
+}
+
+function newScreen(x) {
+  nukeAllButtons();
+  setScreen[x]();
+}
+
+// Start Screen
+function setStartScreen() {
+  background(200);
+  textSize(25);
+  text(appName, 85, 150);
+  settings.position(390 - 59, 5);
+  creditScreen.position(5, 395 - 20);
+  physicalGames.position(150, 225);
+  emotionalGames.position(250, 225);
+}
+
+// Credit Screen
+function setCreditScreen() {
+  background(0);
+  textSize(18);
+  fill(255);
+  text("Credits: Developed by Rucha's Team", 80, 200);
+  startScreen.position(0, 0);
+}
+
+// Physical Games List
+function setPhysicalGamesList() {
+  background(200);
+  textSize(18);
+  text("Choose a Physical Game:", 120, 50);
+  startScreen.position(0, 0);
+  game1.position(120, 120);
+  game2.position(120, 180);
+  game3.position(120, 240);
+}
+
+// RPG Game Scenario Screen
+function setRPGGameScreen() {
+  background(220);
+  textSize(16);
+  text("You see a little boy crying over a broken toy car. \nWhat do you do?", 50, 50);
+
+  createMoralChoiceButtons(); // Set up moral choices
+}
+
+// Function to create moral choice buttons
+function createMoralChoiceButtons() {
+  // Define the choices
+  const choices = [
+    { label: "Walk away", correct: false },
+    { label: 'Yell at him to "Shut up"', correct: false },
+    { label: "Comfort with candy and find his mother", correct: true }
+  ];
+
+  // Position each button
+  for (let i = 0; i < choices.length; i++) {
+    let choice = createButton(choices[i].label);
+    choice.position(100, 150 + i * 40);
+    choice.style("font-size", "14px");
+
+    // Set the button’s action based on correctness
+    choice.mousePressed(() => {
+      if (choices[i].correct) {
+        choice.style("background-color", "green");
+        feedbackText = "Correct! Great job!";
+      } else {
+        choice.style("background-color", "red");
+        feedbackText = "That’s not quite right, try again!";
+      }
+    });
+
+    moralChoiceButtons.push(choice); // Store for later "nuking"
+    allButtonsNuke.push(() => choice.position(2000, 2000)); // To hide on screen change
+  }
+}
+
+// Display feedback message
+function displayFeedback() {
+  textSize(16);
+  fill(0);
+  text(feedbackText, 100, 320);
+}
+
+// Create all initial buttons
+function createAllButtons() {
+  for (let createButtonFunc of allButtonsCreate) {
+    createButtonFunc();
+  }
+}
+
+// Hide all buttons
+function nukeAllButtons() {
+  for (let nukeButtonFunc of allButtonsNuke) {
+    nukeButtonFunc();
+  }
+}
+
+// Define button functions
+function createCreditScreenButton() {
+  creditScreen = createButton('Credits');
+  creditScreen.position(5, 375);
+  creditScreen.mousePressed(() => newScreen(1));
+  allButtonsNuke.push(() => creditScreen.position(2000, 2000));
+}
+
+function createStartScreenButton() {
+  startScreen = createButton('Back');
+  startScreen.position(0, 0);
+  startScreen.mousePressed(() => newScreen(0));
+  allButtonsNuke.push(() => startScreen.position(2000, 2000));
+}
+
+function createPhysicalGamesScreenButton() {
+  physicalGames = createButton('Physical Games');
+  physicalGames.position(150, 225);
+  physicalGames.mousePressed(() => newScreen(2));
+  allButtonsNuke.push(() => physicalGames.position(2000, 2000));
+}
+
+function createGame1Button() {
+  game1 = createButton('Game 1');
+  game1.position(120, 120);
+  allButtonsNuke.push(() => game1.position(2000, 2000));
+}
+
+function createGame2Button() {
+  game2 = createButton('Game 2');
+  game2.position(120, 180);
+  allButtonsNuke.push(() => game2.position(2000, 2000));
+}
+
+function createGame3Button() {
+  game3 = createButton('Game 3');
+  game3.position(120, 240);
+  allButtonsNuke.push(() => game3.position(2000, 2000));
+}
+
+function createEmotionalGamesButton() {
+  emotionalGames = createButton('Emotional Games');
+  emotionalGames.position(250, 225);
+  allButtonsNuke.push(() => emotionalGames.position(2000, 2000));
+}
+
+function createSettingsButton() {
+  settings = createButton('Settings');
+  settings.position(350, 10);
+  allButtonsNuke.push(() => settings.position(2000, 2000));
+}
+
