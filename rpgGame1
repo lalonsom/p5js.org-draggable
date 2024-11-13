@@ -1,5 +1,5 @@
 let creditScreen, startScreen, physicalGames, emotionalGames;
-let Game1, Game2, Game3, appName = 'Torturing The Elderly', settings;
+let game1, game2, game3, appName = 'Torturing The Elderly', settings;
 let moralChoiceButtons = []; // For RPG choices
 let feedbackText = ""; // For feedback messages
 
@@ -32,6 +32,7 @@ function draw() {
   // This function remains empty unless animations or dynamic updates are added.
 }
 
+// Function to switch between screens
 function newScreen(x) {
   nukeAllButtons();
   setScreen[x]();
@@ -75,6 +76,7 @@ function setRPGGameScreen() {
   text("You see a little boy crying over a broken toy car. \nWhat do you do?", 50, 50);
 
   createMoralChoiceButtons(); // Set up moral choices
+  displayFeedback(); // Display feedback message
 }
 
 // Function to create moral choice buttons
@@ -154,18 +156,27 @@ function createPhysicalGamesScreenButton() {
 function createGame1Button() {
   game1 = createButton('Game 1');
   game1.position(120, 120);
+  game1.mousePressed(() => {
+    // Add functionality for Game 1
+  });
   allButtonsNuke.push(() => game1.position(2000, 2000));
 }
 
 function createGame2Button() {
   game2 = createButton('Game 2');
   game2.position(120, 180);
+  game2.mousePressed(() => {
+    // Add functionality for Game 2
+  });
   allButtonsNuke.push(() => game2.position(2000, 2000));
 }
 
 function createGame3Button() {
   game3 = createButton('Game 3');
   game3.position(120, 240);
+  game3.mousePressed(() => {
+    // Add functionality for Game 3
+  });
   allButtonsNuke.push(() => game3.position(2000, 2000));
 }
 
@@ -180,4 +191,3 @@ function createSettingsButton() {
   settings.position(350, 10);
   allButtonsNuke.push(() => settings.position(2000, 2000));
 }
-
