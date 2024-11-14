@@ -1,193 +1,143 @@
-let creditScreen, startScreen, physicalGames, emotionalGames;
-let game1, game2, game3, appName = 'Torturing The Elderly', settings;
-let moralChoiceButtons = []; // For RPG choices
-let feedbackText = ""; // For feedback messages
+// Declare uncommon variable names for elements and state tracking
+let questionText, optionsText, feedbackText, optionColors;
+let selectedOption = null;
+let displayFeedback = false;
+let feedbackDuration = 2000; // Feedback duration in milliseconds
+let feedbackStartTime;
+let currentRound = 0;
 
-// Arrays for buttons
-const allButtonsNuke = [];
-const allButtonsCreate = [
-  function() {createCreditScreenButton()},
-  function() {createStartScreenButton()},
-  function() {createPhysicalGamesScreenButton()},
-  function() {createGame1Button()},
-  function() {createGame2Button()},
-  function() {createGame3Button()},
-  function() {createEmotionalGamesButton()},
-  function() {createSettingsButton()}
-];
-const setScreen = [
-  function() {setStartScreen()},
-  function() {setCreditScreen()},
-  function() {setPhysicalGamesList()},
-  function() {setRPGGameScreen()}
+// Game rounds data
+const rounds = [
+  {
+    question: "Choose the most morally correct decision.\n\nYou see a little boy crying over a broken toy car. You have your grocery bags with candy, milk, and other items.\n\nWhat do you do?",
+    options: [
+      "Walk away",
+      "Comfort the boy by giving him candy and help find his mother",
+      "Yell at him to 'Shut up'",
+      "EXIT"
+    ],
+    correctOption: 1
+  },
+  {
+    question: "You find a wallet on the ground.\n\nWhat is the best action to take?",
+    options: [
+      "Take the money and throw the wallet away",
+      "Turn it in to the nearest police station",
+      "Keep it for yourself",
+      "EXIT"
+    ],
+    correctOption: 1
+  },
+  {
+    question: "You see an elderly person struggling to cross the road.\n\nWhat should you do?",
+    options: [
+      "Help them cross safely",
+      "Ignore them and walk past",
+      "Laugh and walk away",
+      "EXIT"
+    ],
+    correctOption: 0
+  },
+  {
+    question: "A classmate asks to copy your homework.\n\nWhat is the best response?",
+    options: [
+      "Give it to them so they stop bothering you",
+      "Politely refuse and suggest helping them understand the material",
+      "Tell them you lost your homework",
+      "EXIT"
+    ],
+    correctOption: 1
+  },
+  {
+    question: "You see someone drop a $20 bill without noticing.\n\nWhat would you do?",
+    options: [
+      "Take it for yourself",
+      "Call out and return the money",
+      "Leave it on the ground",
+      "EXIT"
+    ],
+    correctOption: 1
+  }
 ];
 
 function setup() {
-  createCanvas(400, 400);
-  createAllButtons();
-  newScreen(0); // Start on the main screen
+  createCanvas(800, 600);
+  textAlign(CENTER, CENTER);
+  feedbackText = "";
+  optionColors = [color(255), color(255), color(255), color(255)];
 }
 
 function draw() {
-  // This function remains empty unless animations or dynamic updates are added.
-}
-
-// Function to switch between screens
-function newScreen(x) {
-  nukeAllButtons();
-  setScreen[x]();
-}
-
-// Start Screen
-function setStartScreen() {
-  background(200);
-  textSize(25);
-  text(appName, 85, 150);
-  settings.position(390 - 59, 5);
-  creditScreen.position(5, 395 - 20);
-  physicalGames.position(150, 225);
-  emotionalGames.position(250, 225);
-}
-
-// Credit Screen
-function setCreditScreen() {
-  background(0);
-  textSize(18);
-  fill(255);
-  text("Credits: Developed by Rucha's Team", 80, 200);
-  startScreen.position(0, 0);
-}
-
-// Physical Games List
-function setPhysicalGamesList() {
-  background(200);
-  textSize(18);
-  text("Choose a Physical Game:", 120, 50);
-  startScreen.position(0, 0);
-  game1.position(120, 120);
-  game2.position(120, 180);
-  game3.position(120, 240);
-}
-
-// RPG Game Scenario Screen
-function setRPGGameScreen() {
   background(220);
-  textSize(16);
-  text("You see a little boy crying over a broken toy car. \nWhat do you do?", 50, 50);
-
-  createMoralChoiceButtons(); // Set up moral choices
-  displayFeedback(); // Display feedback message
+  
+  if (currentRound < rounds.length) {
+    // Display question
+    fill(0);
+    textSize(18);
+    text(rounds[currentRound].question, width / 2, 100);
+    
+    // Display options
+    textSize(16);
+    for (let i = 0; i < rounds[currentRound].options.length; i++) {
+      fill(optionColors[i]);
+      text(rounds[currentRound].options[i], width / 2, 200 + i * 50);
+    }
+  } else {
+    // End of game message
+    fill(0);
+    textSize(24);
+    text("Thank you for playing!", width / 2, height / 2);
+    noLoop(); // Stop the loop
+  }
+  
+  // Display feedback message if feedback is active
+  if (displayFeedback) {
+    fill(0);
+    text(feedbackText, width / 2, 450);
+    if (millis() - feedbackStartTime > feedbackDuration) {
+      displayFeedback = false;
+      resetOptionColors();
+      selectedOption = null;
+      currentRound++; // Move to the next round
+    }
+  }
 }
 
-// Function to create moral choice buttons
-function createMoralChoiceButtons() {
-  // Define the choices
-  const choices = [
-    { label: "Walk away", correct: false },
-    { label: 'Yell at him to "Shut up"', correct: false },
-    { label: "Comfort with candy and find his mother", correct: true }
-  ];
-
-  // Position each button
-  for (let i = 0; i < choices.length; i++) {
-    let choice = createButton(choices[i].label);
-    choice.position(100, 150 + i * 40);
-    choice.style("font-size", "14px");
-
-    // Set the button’s action based on correctness
-    choice.mousePressed(() => {
-      if (choices[i].correct) {
-        choice.style("background-color", "green");
-        feedbackText = "Correct! Great job!";
-      } else {
-        choice.style("background-color", "red");
-        feedbackText = "That’s not quite right, try again!";
+function mousePressed() {
+  if (currentRound < rounds.length) {
+    // Determine which option was selected
+    for (let i = 0; i < rounds[currentRound].options.length; i++) {
+      if (mouseY > 190 + i * 50 && mouseY < 210 + i * 50) {
+        selectedOption = i;
+        checkAnswer();
+        break;
       }
-    });
-
-    moralChoiceButtons.push(choice); // Store for later "nuking"
-    allButtonsNuke.push(() => choice.position(2000, 2000)); // To hide on screen change
+    }
   }
 }
 
-// Display feedback message
-function displayFeedback() {
-  textSize(16);
-  fill(0);
-  text(feedbackText, 100, 320);
-}
-
-// Create all initial buttons
-function createAllButtons() {
-  for (let createButtonFunc of allButtonsCreate) {
-    createButtonFunc();
+function checkAnswer() {
+  resetOptionColors();
+  
+  if (selectedOption === rounds[currentRound].correctOption) { // Correct answer
+    optionColors[selectedOption] = color(0, 255, 0); // Green for correct
+    feedbackText = "Correct, great job!";
+  } else if (selectedOption === 3) { // EXIT option
+    optionColors[selectedOption] = color(200); // Dimmed for exit
+    feedbackText = "Exiting... Thank you for playing!";
+    noLoop(); // Stop the loop immediately
+  } else { // Incorrect answers
+    optionColors[selectedOption] = color(255, 0, 0); // Red for incorrect
+    feedbackText = "That's not quite right, try again!";
   }
+  
+  // Show feedback
+  displayFeedback = true;
+  feedbackStartTime = millis();
 }
 
-// Hide all buttons
-function nukeAllButtons() {
-  for (let nukeButtonFunc of allButtonsNuke) {
-    nukeButtonFunc();
+function resetOptionColors() {
+  for (let i = 0; i < optionColors.length; i++) {
+    optionColors[i] = color(255);
   }
-}
-
-// Define button functions
-function createCreditScreenButton() {
-  creditScreen = createButton('Credits');
-  creditScreen.position(5, 375);
-  creditScreen.mousePressed(() => newScreen(1));
-  allButtonsNuke.push(() => creditScreen.position(2000, 2000));
-}
-
-function createStartScreenButton() {
-  startScreen = createButton('Back');
-  startScreen.position(0, 0);
-  startScreen.mousePressed(() => newScreen(0));
-  allButtonsNuke.push(() => startScreen.position(2000, 2000));
-}
-
-function createPhysicalGamesScreenButton() {
-  physicalGames = createButton('Physical Games');
-  physicalGames.position(150, 225);
-  physicalGames.mousePressed(() => newScreen(2));
-  allButtonsNuke.push(() => physicalGames.position(2000, 2000));
-}
-
-function createGame1Button() {
-  game1 = createButton('Game 1');
-  game1.position(120, 120);
-  game1.mousePressed(() => {
-    // Add functionality for Game 1
-  });
-  allButtonsNuke.push(() => game1.position(2000, 2000));
-}
-
-function createGame2Button() {
-  game2 = createButton('Game 2');
-  game2.position(120, 180);
-  game2.mousePressed(() => {
-    // Add functionality for Game 2
-  });
-  allButtonsNuke.push(() => game2.position(2000, 2000));
-}
-
-function createGame3Button() {
-  game3 = createButton('Game 3');
-  game3.position(120, 240);
-  game3.mousePressed(() => {
-    // Add functionality for Game 3
-  });
-  allButtonsNuke.push(() => game3.position(2000, 2000));
-}
-
-function createEmotionalGamesButton() {
-  emotionalGames = createButton('Emotional Games');
-  emotionalGames.position(250, 225);
-  allButtonsNuke.push(() => emotionalGames.position(2000, 2000));
-}
-
-function createSettingsButton() {
-  settings = createButton('Settings');
-  settings.position(350, 10);
-  allButtonsNuke.push(() => settings.position(2000, 2000));
 }
