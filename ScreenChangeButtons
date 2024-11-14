@@ -6,8 +6,13 @@ let emotionalGames;
 let Game1;
 let Game2;
 let Game3;
+let emotionalGame1;
 let appName = 'Torturing The Elderly';
 let settings;
+
+
+//This changes what runs during "draw" depending on the active game
+let activeGame = -1;
 
 //These arrays are used to simplify Nuke All and Create all respectivley
 const allButtonsNuke = [];
@@ -19,14 +24,17 @@ const allButtonsCreate = [
   function() {createGame2Button()},
   function() {createGame3Button()},
   function() {createEmotionalGamesButton()},
-  function() {createSettingsButton()}
+  function() {createSettingsButton()},
+  function() {createEmotionalGame1Button()}
 ];
 
 //This array is used to set different screens
 const setScreen = [
   function() {setStartScreen()},
   function() {setCreditScreen()},
-  function() {setPhysicalGamesList()}
+  function() {setPhysicalGamesList()},
+  function() {setEmotionalGamesList()},
+  function() {setEmotionaSenario1()}
 ];
 
 function setup() {
@@ -44,8 +52,10 @@ function draw() {}
 
 // Changes Screen, the x variable corrisponds to the screen that is changed
 function newScreen(x) {
+  activeGame = -1;
   //makes sure that there are no buttons on screen that arnt supposed 
   nukeAllButtons();
+  
   setScreen[x]();
 }
 
@@ -81,6 +91,23 @@ function setPhysicalGamesList(){
   game2.position(200-80, 200);
   game3.position(200-80, 300-50);
 }
+
+function setEmotionalGamesList(){
+  background(200);
+  startScreen.position(0,0);
+  
+  emotionalGame1.position(200-80, 100+50);
+}
+
+function setEmotionaSenario1(){
+  
+}
+
+
+
+
+
+
 
 
 //This function should create all the buttons
@@ -157,6 +184,8 @@ function createEmotionalGamesButton(){
   emotionalGames = createButton('Emotional Games', "white");
   emotionalGames.position((200+(80)-50),200+25);
   
+  emotionalGames.mousePressed(() => newScreen(3));
+  
   allButtonsNuke.push(function() {emotionalGames.position(2000,2000)});
 }
 
@@ -165,4 +194,13 @@ function createSettingsButton(){
   settings.position(390-(59),5);
   
   allButtonsNuke.push(function() {settings.position(2000,2000)});
+}
+
+function createEmotionalGame1Button(){
+  emotionalGame1 = createButton('game1',"white");
+  emotionalGame1.position(200,100-10);
+  
+  emotionalGame1.mousePressed(() => newScreen(4));
+  
+  allButtonsNuke.push(function() {emotionalGame1.position(2000,2000)});
 }
