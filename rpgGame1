@@ -1,10 +1,9 @@
 // Declare uncommon variable names for elements and state tracking
 let questionText, optionsText, feedbackText, optionColors;
 let selectedOption = null;
-let displayFeedback = false;
 let feedbackDuration = 2000; // Feedback duration in milliseconds
-let feedbackStartTime;
 let currentRound = 0;
+let allowNextRound = false; // Tracks if the next round can start
 
 // Game rounds data
 const rounds = [
@@ -69,13 +68,13 @@ function setup() {
 
 function draw() {
   background(220);
-  
+
   if (currentRound < rounds.length) {
     // Display question
     fill(0);
     textSize(18);
     text(rounds[currentRound].question, width / 2, 100);
-    
+
     // Display options
     textSize(16);
     for (let i = 0; i < rounds[currentRound].options.length; i++) {
@@ -89,22 +88,16 @@ function draw() {
     text("Thank you for playing!", width / 2, height / 2);
     noLoop(); // Stop the loop
   }
-  
-  // Display feedback message if feedback is active
-  if (displayFeedback) {
+
+  // Display feedback message
+  if (feedbackText) {
     fill(0);
     text(feedbackText, width / 2, 450);
-    if (millis() - feedbackStartTime > feedbackDuration) {
-      displayFeedback = false;
-      resetOptionColors();
-      selectedOption = null;
-      currentRound++; // Move to the next round
-    }
   }
 }
 
 function mousePressed() {
-  if (currentRound < rounds.length) {
+  if (currentRound < rounds.length && !allowNextRound) {
     // Determine which option was selected
     for (let i = 0; i < rounds[currentRound].options.length; i++) {
       if (mouseY > 190 + i * 50 && mouseY < 210 + i * 50) {
@@ -113,15 +106,23 @@ function mousePressed() {
         break;
       }
     }
+  } else if (allowNextRound) {
+    // Proceed to the next round if feedback was acknowledged
+    resetOptionColors();
+    feedbackText = "";
+    selectedOption = null;
+    allowNextRound = false;
+    currentRound++;
   }
 }
 
 function checkAnswer() {
   resetOptionColors();
-  
+
   if (selectedOption === rounds[currentRound].correctOption) { // Correct answer
     optionColors[selectedOption] = color(0, 255, 0); // Green for correct
     feedbackText = "Correct, great job!";
+    allowNextRound = true;
   } else if (selectedOption === 3) { // EXIT option
     optionColors[selectedOption] = color(200); // Dimmed for exit
     feedbackText = "Exiting... Thank you for playing!";
@@ -130,10 +131,6 @@ function checkAnswer() {
     optionColors[selectedOption] = color(255, 0, 0); // Red for incorrect
     feedbackText = "That's not quite right, try again!";
   }
-  
-  // Show feedback
-  displayFeedback = true;
-  feedbackStartTime = millis();
 }
 
 function resetOptionColors() {
