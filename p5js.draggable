@@ -4,7 +4,7 @@ let dragging = false;
 let offsetX, offsetY; 
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(800, 600);
   
   circleX = width / 2;
   circleY = height / 2;
